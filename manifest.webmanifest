@@ -1,0 +1,13 @@
+{
+  "name": "Radio Atlante",
+  "short_name": "TonyRadio",
+  "start_url": "/Tony_RadioAtlante/",
+  "scope": "/Tony_RadioAtlante/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d0d0d",
+  "theme_color": "#0d0d0d",
+  "icons": [
+    { "src": "assets/img/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

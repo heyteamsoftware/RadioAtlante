@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0d0d0d">
+<title>Admin · Radio Atlante</title>
+<link rel="icon" type="image/svg+xml" href="../assets/img/favicon.svg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+  .admin-body { background: var(--bg); min-height: 100vh; }
+  .login-box { max-width: 320px; margin: 18vh auto 0; padding: 0 16px; text-align: center; }
+  .login-box h1 { font-size: 20px; margin-bottom: 24px; }
+  .login-box input {
+    width: 100%; padding: 12px 14px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--bg-elevated); color: var(--text); font-size: 15px; margin-bottom: 12px;
+  }
+  .login-box button {
+    width: 100%; padding: 12px; border-radius: 24px; border: none;
+    background: var(--green); color: #000; font-weight: 700; font-size: 15px; cursor: pointer;
+  }
+  .login-error { color: #ff5f5f; font-size: 13px; min-height: 18px; margin-bottom: 8px; }
+
+  .admin-header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid var(--border); }
+  .admin-header h1 { font-size: 18px; margin: 0; }
+  .btn-logout { background: none; border: 1px solid var(--border); color: var(--text-muted); padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; }
+
+  .upload-form { background: var(--bg-card); border-radius: 12px; padding: 16px; margin: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .upload-form input, .upload-form textarea, .upload-form select {
+    background: var(--bg-elevated); border: 1px solid var(--border); color: var(--text);
+    border-radius: 8px; padding: 10px 12px; font-size: 14px; font-family: inherit;
+  }
+  .upload-form button { background: var(--green); color: #000; border: none; border-radius: 24px; padding: 12px; font-weight: 700; cursor: pointer; }
+  .dropzone {
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    padding: 24px 14px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+  }
+  .dropzone.dragover { border-color: var(--green); background: rgba(29,185,84,0.08); color: var(--text); }
+  .dropzone.has-file { border-color: var(--green); color: var(--text); border-style: solid; }
+  .dropzone strong { display: block; margin-bottom: 4px; font-size: 14px; color: var(--text); }
+  .upload-msg { font-size: 13px; min-height: 18px; }
+  .upload-msg.ok { color: var(--green); }
+  .upload-msg.err { color: #ff5f5f; }
+
+  .admin-cat-filters { display: flex; gap: 8px; overflow-x: auto; padding: 0 16px 12px; scrollbar-width: none; }
+  .admin-cat-filters::-webkit-scrollbar { display: none; }
+
+  .admin-list { padding: 0 16px 60px; display: flex; flex-direction: column; gap: 10px; }
+  .admin-item { background: var(--bg-card); border-radius: 10px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .admin-item-info { min-width: 0; }
+  .admin-item-title { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .admin-item-meta { font-size: 12px; color: var(--text-muted); }
+  .admin-item-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .btn-edit { background: none; border: 1px solid var(--border); color: var(--text-muted); border-radius: 8px; padding: 6px 10px; font-size: 12px; cursor: pointer; }
+  .btn-delete { background: none; border: 1px solid #ff5f5f55; color: #ff5f5f; border-radius: 8px; padding: 6px 10px; font-size: 12px; cursor: pointer; }
+
+  .edit-row { background: var(--bg-elevated); border-radius: 10px; padding: 12px; margin-top: 8px; display: flex; flex-direction: column; gap: 8px; }
+  .edit-row input, .edit-row select, .edit-row textarea {
+    background: var(--bg-card); border: 1px solid var(--border); color: var(--text);
+    border-radius: 8px; padding: 8px 10px; font-size: 13px; font-family: inherit;
+  }
+  .edit-row-actions { display: flex; gap: 8px; }
+  .btn-save { background: var(--green); color: #000; border: none; border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 700; cursor: pointer; }
+  .btn-cancel { background: none; border: 1px solid var(--border); color: var(--text-muted); border-radius: 8px; padding: 8px 14px; font-size: 12px; cursor: pointer; }
+</style>
+</head>
+<body class="admin-body">
+
+<div id="loginView" class="login-box">
+  <h1>🔒 Acceso administración</h1>
+  <p class="login-error" id="loginError"></p>
+  <input type="password" id="passwordInput" placeholder="Contraseña" autocomplete="current-password">
+  <button id="loginBtn">Entrar</button>
+</div>
+
+<div id="adminView" hidden>
+  <div class="admin-header">
+    <h1>Panel · Radio Atlante</h1>
+    <button class="btn-logout" id="logoutBtn">Salir</button>
+  </div>
+
+  <form class="upload-form" id="uploadForm">
+    <strong>Subir nuevo programa</strong>
+    <input type="text" id="fTitle" placeholder="Título del programa" required>
+    <select id="fCategory" required></select>
+    <textarea id="fDescription" placeholder="Descripción (opcional)" rows="2"></textarea>
+    <div class="dropzone" id="dropzone">
+      <strong>Arrastra aquí el MP3</strong>
+      o toca para seleccionar un archivo
+    </div>
+    <input type="file" id="fAudio" accept="audio/mpeg,.mp3" required hidden>
+    <button type="submit" id="uploadBtn">Subir MP3</button>
+    <p class="upload-msg" id="uploadMsg"></p>
+  </form>
+
+  <div class="admin-cat-filters" id="adminCatFilters"></div>
+
+  <div class="admin-list" id="adminList">
+    <p style="color:var(--text-muted); padding: 0 4px;">Cargando programas…</p>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>

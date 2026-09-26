@@ -1,0 +1,6 @@
+# Datos de producción (no versionar)
+db/*.sqlite
+db/now_playing.json
+media/*.mp3
+tmp_uploads/*
+!tmp_uploads/.htaccess

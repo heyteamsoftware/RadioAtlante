@@ -1,0 +1,10 @@
+Options -Indexes
+
+# Solo se sirven audio e imágenes desde esta carpeta; nunca se ejecuta código
+<FilesMatch "\.(php|phtml|php\d)$">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_headers.c>
+    Header set Accept-Ranges bytes
+</IfModule>

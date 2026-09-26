@@ -1,0 +1,23 @@
+Options -Indexes
+
+<FilesMatch "\.(sqlite|sqlite3|db|liq|env)$">
+    Require all denied
+</FilesMatch>
+
+# Evita que el navegador cachee agresivamente JS/CSS sin revalidar (usamos
+# ?v=N en las referencias para forzar refresco en cada despliegue).
+<IfModule mod_headers.c>
+    <FilesMatch "\.(js|css)$">
+        Header set Cache-Control "no-cache, must-revalidate"
+    </FilesMatch>
+</IfModule>
+
+# Límites de subida ampliados solo para esta app (programas de radio en MP3
+# pueden pesar decenas de MB); no afecta al resto de apps del servidor.
+<IfModule mod_php.c>
+    php_value upload_max_filesize 200M
+    php_value post_max_size 210M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+    php_value memory_limit 256M
+</IfModule>
