@@ -1,0 +1,35 @@
+#!/usr/bin/liquidsoap
+# Radio Atlante - Auto-DJ 24h  ->  /etc/liquidsoap/radio.liq
+# Sustituye ICECAST_SOURCE_PASSWORD por la contraseña de fuente de Icecast.
+
+media_dir = "/var/www/html/Tony_RadioAtlante/media/"
+now_playing_file = "/var/www/html/Tony_RadioAtlante/db/now_playing.json"
+
+radio = playlist(mode="randomize", reload=30, reload_mode="watch", media_dir)
+
+# Al empezar cada pista guardamos título + instante de inicio para calcular
+# "por qué minuto va" (lo lee api/live_status.php).
+def on_new_track(m) =
+  title = m["title"]
+  ts = int_of_float(time())
+  escaped_title = string.replace(pattern="\"", fun (_) -> "'", title)
+  json = "{\"title\": \"" ^ escaped_title ^ "\", \"started_at\": " ^ string_of(ts) ^ "}"
+  cmd = "printf '%s' " ^ process.quote(json) ^ " > " ^ process.quote(now_playing_file)
+  ignore(process.run(cmd))
+end
+
+radio = source.on_metadata(radio, on_new_track)
+radio = mksafe(radio)
+
+output.icecast(
+  %mp3(bitrate=128),
+  host = "127.0.0.1",
+  port = 8000,
+  password = "ICECAST_SOURCE_PASSWORD",
+  mount = "stream",
+  name = "Radio Atlante en directo",
+  description = "Radio online 24h - Radio Atlante",
+  genre = "Variado",
+  url = "https://myappsserver.duckdns.org/Tony_RadioAtlante/",
+  radio
+)

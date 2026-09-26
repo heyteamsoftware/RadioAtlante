@@ -1,0 +1,4 @@
+# Dentro del <VirtualHost *:443> existente (a2enmod proxy proxy_http headers)
+ProxyPreserveHost On
+ProxyPass /Tony_RadioAtlante/stream http://127.0.0.1:8000/stream
+ProxyPassReverse /Tony_RadioAtlante/stream http://127.0.0.1:8000/stream
