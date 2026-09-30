@@ -27,7 +27,42 @@
   }
 
   function showLogin() { loginView.hidden = false; adminView.hidden = true; }
-  function showAdmin() { loginView.hidden = true; adminView.hidden = false; loadPrograms(); }
+  function showAdmin() { loginView.hidden = true; adminView.hidden = false; loadPrograms(); loadStats(); }
+
+  async function loadStats() {
+    const statCurrent = document.getElementById('statCurrent');
+    const statPeak = document.getElementById('statPeak');
+    const statsChart = document.getElementById('statsChart');
+    const statsEmpty = document.getElementById('statsEmpty');
+    try {
+      const res = await fetch(`${API}/admin_stats.php`);
+      const data = await res.json();
+      statCurrent.textContent = data.current_listeners ?? '—';
+      statPeak.textContent = data.peak_30d ?? '—';
+
+      const series = data.series_24h || [];
+      if (!series.length) {
+        statsChart.innerHTML = '';
+        statsEmpty.hidden = false;
+        return;
+      }
+      statsEmpty.hidden = true;
+
+      const maxVal = Math.max(1, ...series.map(p => p.max));
+      const w = 300, h = 90, barGap = 2;
+      const barW = (w / series.length) - barGap;
+      const bars = series.map((p, i) => {
+        const barH = Math.max(2, (p.max / maxVal) * (h - 4));
+        const x = i * (barW + barGap);
+        const y = h - barH;
+        return `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barW.toFixed(1)}" height="${barH.toFixed(1)}" rx="1.5" fill="#1db954" opacity="0.85"><title>${new Date(p.hour * 1000).toLocaleString('es-ES', { hour: '2-digit', day: '2-digit', month: '2-digit' })} — pico ${p.max}, media ${p.avg}</title></rect>`;
+      }).join('');
+      statsChart.innerHTML = bars;
+    } catch (e) {
+      // No bloqueamos el resto del panel si las estadísticas fallan
+      statsEmpty.hidden = false;
+    }
+  }
 
   async function doLogin() {
     loginError.textContent = '';

@@ -11,3 +11,19 @@
 7. Añade `apache-proxy.conf.example` al vhost SSL, `apache2ctl configtest` y recarga.
 
 Contraseñas y `db/radio.sqlite` no se versionan.
+
+## Estadísticas de oyentes (opcional)
+
+`cron/collect_stats.php` muestrea los oyentes de Icecast y los guarda en la
+tabla `listener_stats`. Instálalo con cron cada minuto:
+
+    (crontab -u www-data -l 2>/dev/null; echo '* * * * * /usr/bin/php /var/www/html/Tony_RadioAtlante/cron/collect_stats.php') | crontab -u www-data -
+
+El panel admin (`admin/`) muestra oyentes actuales, pico de 30 días y un
+gráfico de las últimas 24h vía `api/admin_stats.php`.
+
+## PWA
+
+`service-worker.js` cachea solo el shell estático (HTML/CSS/JS/iconos);
+nunca intercepta `/api/`, `/admin/`, `/stream`, `/media/`, `/covers/` ni
+`/tmp_uploads/`, para no afectar al directo ni a los datos en vivo.

@@ -297,4 +297,12 @@
   loadLiveStatus();
   loadPrograms();
   setInterval(loadLiveStatus, 20000);
+
+  // PWA: registra el service worker solo para el shell estático (ver
+  // service-worker.js); si falla, la app sigue funcionando igual.
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js').catch(() => {});
+    });
+  }
 })();

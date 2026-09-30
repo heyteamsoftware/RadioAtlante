@@ -51,6 +51,15 @@
   .admin-cat-filters { display: flex; gap: 8px; overflow-x: auto; padding: 0 16px 12px; scrollbar-width: none; }
   .admin-cat-filters::-webkit-scrollbar { display: none; }
 
+  .stats-card { background: var(--bg-card); border-radius: 12px; padding: 16px; margin: 16px; }
+  .stats-card h2 { font-size: 15px; margin: 0 0 12px; }
+  .stats-row { display: flex; gap: 24px; margin-bottom: 14px; }
+  .stats-metric { display: flex; flex-direction: column; }
+  .stats-metric-value { font-size: 24px; font-weight: 800; color: var(--green); }
+  .stats-metric-label { font-size: 11px; color: var(--text-muted); }
+  .stats-chart { width: 100%; height: 90px; display: block; }
+  .stats-empty { color: var(--text-muted); font-size: 13px; }
+
   .admin-list { padding: 0 16px 60px; display: flex; flex-direction: column; gap: 10px; }
   .admin-item { background: var(--bg-card); border-radius: 10px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
   .admin-item-info { min-width: 0; }
@@ -83,6 +92,22 @@
   <div class="admin-header">
     <h1>Panel · Radio Atlante</h1>
     <button class="btn-logout" id="logoutBtn">Salir</button>
+  </div>
+
+  <div class="stats-card" id="statsCard">
+    <h2>📊 Oyentes</h2>
+    <div class="stats-row">
+      <div class="stats-metric">
+        <span class="stats-metric-value" id="statCurrent">—</span>
+        <span class="stats-metric-label">ahora</span>
+      </div>
+      <div class="stats-metric">
+        <span class="stats-metric-value" id="statPeak">—</span>
+        <span class="stats-metric-label">pico (30 días)</span>
+      </div>
+    </div>
+    <svg id="statsChart" class="stats-chart" viewBox="0 0 300 90" preserveAspectRatio="none"></svg>
+    <p class="stats-empty" id="statsEmpty" hidden>Aún no hay histórico suficiente (se recoge cada minuto).</p>
   </div>
 
   <form class="upload-form" id="uploadForm">

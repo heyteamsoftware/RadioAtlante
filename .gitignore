@@ -1,6 +1,5 @@
-# Datos de producción (no versionar)
+media/*.mp3
 db/*.sqlite
 db/now_playing.json
-media/*.mp3
 tmp_uploads/*
 !tmp_uploads/.htaccess
