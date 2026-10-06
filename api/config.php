@@ -49,6 +49,7 @@ const CATEGORIES = [
     'Onda Azul' => 'onda_azul.jpg',
     'Cosas que Importan' => 'cosas_que_importan.jpg',
     'Conoce tu Empresa' => 'conoce_tu_empresa.jpg',
+    'Salud en las Ondas' => 'salud_en_las_ondas.jpg',
     'Eventos' => 'eventos.jpg',
     'Otros' => 'otros.jpg',
 ];
