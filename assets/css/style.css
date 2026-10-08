@@ -51,13 +51,14 @@ html, body {
   font-weight: 600;
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
+  margin-top: 28px;
 }
 
 .live-card {
   background: linear-gradient(160deg, #1db954 0%, #0f4c2c 100%);
   border-radius: 16px;
   padding: 24px 20px;
-  margin: 8px 0 28px;
+  margin: 12px 0 28px;
   position: relative;
   overflow: hidden;
 }

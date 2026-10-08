@@ -10,13 +10,13 @@
 // Así nos aseguramos de que nada de esto se sirva nunca "cacheado" ni afecte
 // al directo o a los datos.
 
-const CACHE_NAME = 'radio-atlante-shell-v2';
+const CACHE_NAME = 'radio-atlante-shell-v4';
 const SCOPE = self.registration.scope;
 
 const SHELL_FILES = [
   './',
   './index.html',
-  './assets/css/style.css?v=5',
+  './assets/css/style.css?v=6',
   './assets/js/app.js?v=5',
   './assets/img/favicon.svg',
   './assets/img/default-cover.svg',
@@ -59,7 +59,24 @@ self.addEventListener('fetch', (event) => {
     return; // deja pasar directo a la red, sin tocar el service worker
   }
 
-  // Cache-first para el shell estático, con fallback a red y actualización
+  // La página principal: red primero (así los cambios se ven al instante) y
+  // caché solo como respaldo sin conexión.
+  if (req.mode === 'navigate') {
+    event.respondWith(
+      fetch(req)
+        .then((res) => {
+          if (res && res.ok) {
+            const copy = res.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+          }
+          return res;
+        })
+        .catch(() => caches.match(req).then((c) => c || caches.match('./index.html')))
+    );
+    return;
+  }
+
+  // Cache-first para el resto del shell estático, con actualización
   // silenciosa en segundo plano.
   event.respondWith(
     caches.match(req).then((cached) => {
