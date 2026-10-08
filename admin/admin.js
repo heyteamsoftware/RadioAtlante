@@ -39,6 +39,7 @@
       const data = await res.json();
       statCurrent.textContent = data.current_listeners ?? '—';
       statPeak.textContent = data.peak_30d ?? '—';
+      document.getElementById('statVisitors').textContent = data.unique_visitors ?? '—';
 
       const series = data.series_24h || [];
       if (!series.length) {

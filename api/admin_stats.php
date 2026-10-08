@@ -43,6 +43,7 @@ $peakRow = $peakStmt->fetch();
 json_response([
     'current_listeners' => $current,
     'peak_30d' => (int)($peakRow['peak'] ?? 0),
+    'unique_visitors' => (int)$pdo->query("SELECT COUNT(*) FROM visitors")->fetchColumn(),
     'series_24h' => $series,
     'has_data' => count($series) > 0,
 ]);

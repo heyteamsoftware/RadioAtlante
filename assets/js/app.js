@@ -294,6 +294,34 @@
 
   searchInput.addEventListener('input', renderPrograms);
 
+  // Contador de visitantes únicos: id aleatorio guardado en este dispositivo,
+  // sin IP ni datos personales (ver api/visit.php).
+  async function registerVisit() {
+    const el = document.getElementById('visitorCount');
+    let vid = null;
+    try {
+      vid = localStorage.getItem('ra_vid');
+      if (!vid) {
+        const bytes = crypto.getRandomValues(new Uint8Array(16));
+        vid = Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+        localStorage.setItem('ra_vid', vid);
+      }
+    } catch (e) { /* sin almacenamiento: solo mostramos el total */ }
+
+    try {
+      const res = await fetch(`${API_BASE}/visit.php`, vid ? {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vid }),
+      } : undefined);
+      const data = await res.json();
+      el.textContent = Number(data.count).toLocaleString('es-ES');
+    } catch (e) {
+      document.getElementById('visitorCounter').hidden = true;
+    }
+  }
+
+  registerVisit();
   loadLiveStatus();
   loadPrograms();
   setInterval(loadLiveStatus, 20000);

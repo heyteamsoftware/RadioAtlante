@@ -10,14 +10,14 @@
 // Así nos aseguramos de que nada de esto se sirva nunca "cacheado" ni afecte
 // al directo o a los datos.
 
-const CACHE_NAME = 'radio-atlante-shell-v1';
+const CACHE_NAME = 'radio-atlante-shell-v2';
 const SCOPE = self.registration.scope;
 
 const SHELL_FILES = [
   './',
   './index.html',
-  './assets/css/style.css?v=4',
-  './assets/js/app.js?v=4',
+  './assets/css/style.css?v=5',
+  './assets/js/app.js?v=5',
   './assets/img/favicon.svg',
   './assets/img/default-cover.svg',
   './manifest.webmanifest',
